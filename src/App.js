@@ -67,9 +67,10 @@ function App() {
 					company: person.job_company_name,
 					email: person.work_email.toString(),
 					phone: person.mobile_phone.toString(),
-					jobTitleLevels: person.job_title_levels[0],
+					jobTitleLevels: person.job_title_levels,
 					locationCountry: person.location_country,
-					linkedinUrl: person.linkedin_url
+					linkedinUrl: person.linkedin_url,
+					skills: person.skills.slice(0,3)
 				}));
 
 				setData((prev) =>
@@ -243,6 +244,12 @@ function App() {
 										scope="col"
 										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
+										Skills
+									</th>
+									<th
+										scope="col"
+										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+									>
 										Company Website
 									</th>
 									<th
@@ -301,7 +308,40 @@ function App() {
 												{item.jobTitle}
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-												{item.jobTitleLevels}
+												<div className="flex flex-wrap gap-1">
+													{Array.isArray(item.jobTitleLevels) ? (
+														item.jobTitleLevels.map((level, idx) => (
+															<span
+																key={idx}
+																className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+															>
+																{level}
+															</span>
+														))
+													) : (
+														<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+															{item.jobTitleLevels}
+														</span>
+													)}
+												</div>
+											</td>
+											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+												<div className="flex flex-wrap gap-1">
+													{Array.isArray(item.skills) ? (
+														item.skills.map((skill, idx) => (
+															<span
+																key={idx}
+																className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+															>
+																{skill}
+															</span>
+														))
+													) : (
+														<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+															{item.skills}
+														</span>
+													)}
+												</div>
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
 												<a
