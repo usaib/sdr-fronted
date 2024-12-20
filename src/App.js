@@ -8,6 +8,32 @@ function App() {
 	const [data, setData] = useState([]);
 	const [scrollToken, setScrollToken] = useState(null);
 	const [selectedRows, setSelectedRows] = useState([]);
+	const [gmailConnected, setGmailConnected] = useState(true);
+	const [userEmail, setUserEmail] = useState(null);
+
+	// Add function to check Gmail connection status
+	const checkGmailConnection = useCallback(async () => {
+		try {
+			const response = await fetch("http://127.0.0.1:5000/check-connection", {
+				credentials: "include" // Important for cookies/session
+			});
+			const data = await response.json();
+			setGmailConnected(data.connected);
+			setUserEmail(data.email);
+		} catch (error) {
+			console.error("Failed to check Gmail connection:", error);
+		}
+	}, []);
+
+	// Add Gmail connection handler
+	const handleGmailConnect = () => {
+		window.location.href = "http://127.0.0.1:5000/login";
+	};
+	// Check connection status on component mount
+	useEffect(() => {
+		checkGmailConnection();
+	}, [checkGmailConnection]);
+
 	const navigate = useNavigate();
 	// Add selection handlers
 	const handleSelectAll = (e) => {
@@ -54,42 +80,77 @@ function App() {
 			try {
 				setLoading(true);
 				setError(null);
-				console.log(filters);
-				// Use the hardcoded data instead of making an API call
-				const responseData = searchResponse.data.data;
-				const newScrollToken = searchResponse.data.scroll_token;
 
-				// Transform the data
-				const transformedData = responseData.map((person) => ({
-					name: `${person.first_name} ${person.last_name}`,
-					jobTitle: person.job_title,
-					companyWebsite: person.job_company_website,
-					company: person.job_company_name,
-					email: person.work_email.toString(),
-					phone: person.mobile_phone.toString(),
-					jobTitleLevels: person.job_title_levels,
-					locationCountry: person.location_country,
-					linkedinUrl: person.linkedin_url,
-					skills: person.skills.slice(0,3)
-				}));
+				// Construct the filters object
+				const filterPayload = {
+					filters: {
+						job_company_website: filters.job_company_website
+							? [filters.job_company_website]
+							: [],
+						job_title_role: filters.job_title_role || "",
+						job_title_levels: filters.job_title_levels || [],
+						location_country: filters.location_country || ""
+					},
+					size: size
+				};
 
-				setData((prev) =>
-					append ? [...prev, ...transformedData] : transformedData
+				// Add scroll token for pagination if it exists
+				if (append && scrollToken) {
+					filterPayload.scroll_token = scrollToken;
+				}
+
+				const response = await fetch(
+					"http://127.0.0.1:5000/api/people/search",
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(filterPayload)
+					}
 				);
-				setScrollToken(newScrollToken);
+
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+
+				const responseData = await response.json();
+
+				if (responseData.success) {
+					// Transform the data
+					const transformedData = responseData.data.data.map((person) => ({
+						name: `${person.first_name} ${person.last_name}`,
+						jobTitle: person.job_title,
+						companyWebsite: person.job_company_website,
+						company: person.job_company_name,
+						email: person.work_email,
+						phone: person.mobile_phone,
+						jobTitleLevels: person.job_title_levels,
+						locationCountry: person.location_country,
+						linkedinUrl: person.linkedin_url,
+						skills: person.skills.slice(0, 3) // Take first 3 skills
+					}));
+
+					setData((prev) =>
+						append ? [...prev, ...transformedData] : transformedData
+					);
+					setScrollToken(responseData.data.scroll_token);
+				} else {
+					setError(responseData.error.message);
+				}
 			} catch (err) {
-				setError("Failed to process data.");
+				console.error("Error fetching data:", err);
+				setError("Failed to fetch data. Please try again.");
 			} finally {
 				setLoading(false);
 			}
 		},
-		[filters] // removed scrollToken and size since we're using static data
+		[filters, size]
 	);
-
-	// Trigger data fetch when filters change
+	// Update useEffect to reset pagination when filters change
 	useEffect(() => {
 		setScrollToken(null); // Reset pagination when filters change
-		getData(false);
+		getData(false); // Get initial data
 	}, [filters, getData]);
 
 	// Update input change handler
@@ -117,8 +178,42 @@ function App() {
 	const loadMore = () => {
 		if (scrollToken) getData(true);
 	};
+
 	return (
 		<div className="flex h-screen bg-gray-50">
+			{/* Gmail Connection Header */}
+			<div className="w-full bg-white shadow-sm p-4 fixed top-0 z-50">
+				<div className="max-w-7xl mx-auto flex justify-between items-center">
+					<div className="flex items-center space-x-4">
+						<h1 className="text-xl font-semibold text-gray-800">
+							Email Campaign
+						</h1>
+						{gmailConnected ? (
+							<div className="flex items-center space-x-2">
+								<span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+									<span className="mr-2">●</span>
+									Connected to {"Usaib's Email"}
+								</span>
+							</div>
+						) : (
+							<button
+								onClick={handleGmailConnect}
+								className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+							>
+								<svg
+									className="w-5 h-5 mr-2"
+									fill="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14h-2V8l-8 5-8-5v10H4V6h16v12z" />
+								</svg>
+								Connect Gmail
+							</button>
+						)}
+					</div>
+				</div>
+			</div>
+
 			{/* Sidebar Filters */}
 			<aside className="w-70 p-6 bg-white border-r border-gray-200 shadow-sm">
 				<h2 className="text-xl font-bold mb-6 text-gray-800">Filters</h2>
@@ -183,7 +278,7 @@ function App() {
 			</aside>
 
 			{/* Main Content */}
-			<main className="flex-1 p-8 overflow-auto">
+			<main className="flex-1 p-8 mt-16 overflow-auto">
 				{error && (
 					<div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
 						{error}
@@ -399,25 +494,17 @@ function App() {
 					</div>
 				</div>
 
-				{/* Load More Button */}
-				{scrollToken && (
-					<div className="flex justify-center mt-6">
+				<div className="mt-4 flex justify-center">
+					{scrollToken && !loading && (
 						<button
-							onClick={loadMore}
-							disabled={loading}
-							className="px-6 py-2.5 bg-blue-600 text-white font-medium text-sm rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							onClick={() => getData(true)}
+							className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
 						>
-							{loading ? (
-								<span className="flex items-center">
-									<div className="animate-spin h-4 w-4 mr-2 border-b-2 border-white rounded-full"></div>
-									Loading...
-								</span>
-							) : (
-								"Load More"
-							)}
+							Load More
 						</button>
-					</div>
-				)}
+					)}
+					{loading && <div className="text-gray-600">Loading...</div>}
+				</div>
 			</main>
 		</div>
 	);

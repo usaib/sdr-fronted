@@ -6,6 +6,9 @@ function Outreach() {
 	const selectedData = location.state?.selectedData || [];
 	const [selectedPerson, setSelectedPerson] = useState(null);
 	const [generatedEmails, setGeneratedEmails] = useState("");
+	const [sendingStatus, setSendingStatus] = useState({});
+	const [sendingErrors, setSendingErrors] = useState({});
+
 	const [loading, setLoading] = useState(false);
 	// Form state
 	const [senderData, setSenderData] = useState({
@@ -74,7 +77,6 @@ function Outreach() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					// Add CORS headers if needed
 					"Access-Control-Allow-Origin": "*"
 				},
 				body: JSON.stringify({
@@ -116,11 +118,57 @@ function Outreach() {
 		});
 	};
 
-	// Handle email send
-	const handleSendEmail = async (email) => {
-		// Implement your email sending logic here
-		console.log("Sending email:", email);
+	const handleSendEmail = async (email, recipientEmail) => {
+		if (!email || !recipientEmail) return;
+
+		setSendingErrors((prev) => ({
+			...prev,
+			[recipientEmail]: null
+		}));
+
+		setSendingStatus((prev) => ({
+			...prev,
+			[recipientEmail]: "sending"
+		}));
+
+		try {
+			const response = await fetch("http://127.0.0.1:5000/api/send-email", {
+				method: "POST",
+				credentials: "include", // Important for session cookies
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					to: "it_account@atlasnova.ai",
+					subject: email.subject,
+					body: email.body,
+					user_email: "usaibkhan777@gmail.com"
+				})
+			});
+
+			const data = await response.json();
+
+			if (data.success) {
+				setSendingStatus((prev) => ({
+					...prev,
+					[recipientEmail]: "sent"
+				}));
+			} else {
+				throw new Error(data.error);
+			}
+		} catch (error) {
+			console.error("Failed to send email:", error);
+			setSendingStatus((prev) => ({
+				...prev,
+				[recipientEmail]: "error"
+			}));
+			setSendingErrors((prev) => ({
+				...prev,
+				[recipientEmail]: error.message
+			}));
+		}
 	};
+
 	return (
 		<div className="h-screen flex flex-col bg-gray-50">
 			{/* Header */}
@@ -312,6 +360,19 @@ function Outreach() {
 						<div className="p-6">
 							<h2 className="text-lg font-semibold mb-4">Edit Email</h2>
 							<div className="space-y-4">
+								{sendingErrors[selectedData[selectedPerson].email] && (
+									<div className="w-full p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+										{sendingErrors[selectedData[selectedPerson].email]}
+									</div>
+								)}
+
+								{/* Success Message */}
+								{sendingStatus[selectedData[selectedPerson].email] ===
+									"sent" && (
+									<div className="w-full p-4 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm">
+										Email sent successfully!
+									</div>
+								)}
 								<div>
 									<label className="block text-sm font-medium text-gray-700 mb-2">
 										Subject
@@ -351,7 +412,10 @@ function Outreach() {
 									</button>
 									<button
 										onClick={() =>
-											handleSendEmail(generatedEmails[selectedPerson])
+											handleSendEmail(
+												generatedEmails[selectedPerson],
+												selectedData[selectedPerson].email
+											)
 										}
 										className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
 									>
