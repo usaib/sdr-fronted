@@ -73,20 +73,23 @@ function Outreach() {
 		setLoading(true);
 
 		try {
-			const response = await fetch("http://127.0.0.1:5000/api/generate-email", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "*"
-				},
-				body: JSON.stringify({
-					person_data: selectedData,
-					sender_data: senderData,
-					purpose: emailPreferences.purpose,
-					tone: emailPreferences.tone,
-					language: emailPreferences.language
-				})
-			});
+			const response = await fetch(
+				"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/generate-email",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"Access-Control-Allow-Origin": "*"
+					},
+					body: JSON.stringify({
+						person_data: selectedData,
+						sender_data: senderData,
+						purpose: emailPreferences.purpose,
+						tone: emailPreferences.tone,
+						language: emailPreferences.language
+					})
+				}
+			);
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
@@ -132,19 +135,22 @@ function Outreach() {
 		}));
 
 		try {
-			const response = await fetch("http://127.0.0.1:5000/api/send-email", {
-				method: "POST",
-				credentials: "include", // Important for session cookies
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					to: "it_account@atlasnova.ai",
-					subject: email.subject,
-					body: email.body,
-					user_email: "usaibkhan777@gmail.com"
-				})
-			});
+			const response = await fetch(
+				"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/send-email",
+				{
+					method: "POST",
+					credentials: "include", // Important for session cookies
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						to: "it_account@atlasnova.ai",
+						subject: email.subject,
+						body: email.body,
+						user_email: "usaibkhan777@gmail.com"
+					})
+				}
+			);
 
 			const data = await response.json();
 

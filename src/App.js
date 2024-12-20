@@ -14,9 +14,12 @@ function App() {
 	// Add function to check Gmail connection status
 	const checkGmailConnection = useCallback(async () => {
 		try {
-			const response = await fetch("http://127.0.0.1:5000/check-connection", {
-				credentials: "include" // Important for cookies/session
-			});
+			const response = await fetch(
+				"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/check-connection",
+				{
+					credentials: "include" // Important for cookies/session
+				}
+			);
 			const data = await response.json();
 			setGmailConnected(data.connected);
 			setUserEmail(data.email);
@@ -27,7 +30,8 @@ function App() {
 
 	// Add Gmail connection handler
 	const handleGmailConnect = () => {
-		window.location.href = "http://127.0.0.1:5000/login";
+		window.location.href =
+			"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/login";
 	};
 	// Check connection status on component mount
 	useEffect(() => {
@@ -100,7 +104,7 @@ function App() {
 				}
 
 				const response = await fetch(
-					"http://127.0.0.1:5000/api/people/search",
+					"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/people/search",
 					{
 						method: "POST",
 						headers: {
