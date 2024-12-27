@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { fetchData } from "./apiService";
-import searchResponse from "../src/search-response.json";
 import "./index.css"; // Tailwind CSS
 import { useNavigate } from "react-router-dom";
 
