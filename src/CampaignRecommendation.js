@@ -29,8 +29,7 @@ function CampaignRecommendation() {
 			try {
 				// Configure AWS SDK
 				AWS.config.update({
-					accessKeyId: "AKIA5FTZFHPXIDAXYUF3",
-					secretAccessKey: "HOSuzwUA9cc7rdmz1088lqIvhnZZxcxVC4fQ1VHV",
+				
 					region: "us-east-1" // Update to your region
 				});
 
