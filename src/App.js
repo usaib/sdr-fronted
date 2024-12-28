@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "./index.css"; // Tailwind CSS
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 function App() {
 	const [data, setData] = useState([]);
@@ -8,6 +9,9 @@ function App() {
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [gmailConnected, setGmailConnected] = useState(true);
 	const [userEmail, setUserEmail] = useState(null);
+	const location = useLocation();
+	const recommendations = location.state?.recommendations || null;
+	const targeting_parameters = location.state?.targeting_parameters || {};
 
 	// Add function to check Gmail connection status
 	const checkGmailConnection = useCallback(async () => {
@@ -60,12 +64,15 @@ function App() {
 		const selectedData = selectedRows.map((index) => data[index]);
 		navigate("/outreach-strategy", { state: { selectedData } });
 	};
-	const [filters, setFilters] = useState({
-		job_company_website: "",
-		job_title_role: "",
-		job_title_levels: [],
-		location_country: ""
-	});
+	const [filters, setFilters] = useState(
+		targeting_parameters || {
+			job_company_website: "",
+			job_title_role: "",
+			job_title_levels: [],
+			location_country: ""
+		}
+	);
+
 	const [formValues, setFormValues] = useState({
 		job_company_website: "",
 		job_title_role: "",
@@ -217,7 +224,7 @@ function App() {
 			</div>
 
 			{/* Sidebar Filters */}
-			<aside className="w-70 p-6 bg-white border-r border-gray-200 shadow-sm">
+			<aside className="w-1/4 p-6 bg-white border-r border-gray-200 shadow-sm overflow-y-auto">
 				<h2 className="text-xl font-bold mb-6 text-gray-800">Filters</h2>
 				<form onSubmit={handleFilterSubmit} className="space-y-6">
 					{/* ... existing filter inputs with updated styling ... */}
@@ -277,6 +284,16 @@ function App() {
 						Apply Filters
 					</button>
 				</form>
+				{recommendations && (
+					<div className="mt-8">
+						<h2 className="text-xl font-bold mb-4 text-gray-800">
+							Recommendations of Targeted Audience
+						</h2>
+						<div className="prose max-h-96 overflow-y-auto">
+							<ReactMarkdown>{recommendations}</ReactMarkdown>
+						</div>
+					</div>
+				)}
 			</aside>
 
 			{/* Main Content */}
