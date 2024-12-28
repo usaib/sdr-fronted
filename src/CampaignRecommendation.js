@@ -29,7 +29,8 @@ function CampaignRecommendation() {
 			try {
 				// Configure AWS SDK
 				AWS.config.update({
-				
+					accessKeyId: "AKIA5FTZFHPXIDAXYUF3",
+					secretAccessKey: "HOSuzwUA9cc7rdmz1088lqIvhnZZxcxVC4fQ1VHV",
 					region: "us-east-1" // Update to your region
 				});
 
@@ -174,14 +175,14 @@ function CampaignRecommendation() {
 				</div>
 				<div>
 					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Purpose of Campaign
+						What's your need?
 					</label>
 					<textarea
 						name="campaignPurpose"
 						value={formData.campaignPurpose}
 						onChange={handleChange}
 						className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-						placeholder="Describe the purpose of your campaign"
+						placeholder="Describe your ideal customers."
 						rows="3"
 					/>
 				</div>

@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import "./index.css"; // Tailwind CSS
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm';
+
 
 function App() {
 	const [data, setData] = useState([]);
@@ -82,6 +84,7 @@ function App() {
 	const [size] = useState(10);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [showRecommendations, setShowRecommendations] = useState(false);
 
 	// Fetch data
 	const getData = useCallback(
@@ -224,56 +227,59 @@ function App() {
 			</div>
 
 			{/* Sidebar Filters */}
-			<aside className="w-1/4 p-6 bg-white border-r border-gray-200 shadow-sm overflow-y-auto">
+			<aside className="w-80 p-6 bg-white border-r border-gray-200 shadow-sm overflow-y-auto">
 				<h2 className="text-xl font-bold mb-6 text-gray-800">Filters</h2>
 				<form onSubmit={handleFilterSubmit} className="space-y-6">
-					{/* ... existing filter inputs with updated styling ... */}
 					<div>
 						<label className="block text-sm font-medium text-gray-700 mb-2">
 							Company Website
 						</label>
-						<input
+						<textarea
 							type="text"
 							name="job_company_website"
 							className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 							placeholder="e.g., plaid.com"
 							onChange={handleInputChange}
+							rows={1}
 						/>
 					</div>
 					<div>
 						<label className="block text-sm font-medium text-gray-700 mb-2">
 							Job Title Role
 						</label>
-						<input
-							type="text"
+						<textarea
 							name="job_title_role"
 							className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 							placeholder="e.g., engineering"
 							onChange={handleInputChange}
+							value={filters.job_title_role}
+							rows={2} // Adjust the number of rows as needed
 						/>
 					</div>
 					<div>
 						<label className="block text-sm font-medium text-gray-700 mb-2">
 							Job Title Levels
 						</label>
-						<input
-							type="text"
+						<textarea
 							name="job_title_levels"
 							className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 							placeholder="vp, director, manager"
 							onChange={handleInputChange}
+							value={filters.job_title_levels}
+							rows={2} // Adjust the number of rows as needed
 						/>
 					</div>
 					<div>
 						<label className="block text-sm font-medium text-gray-700 mb-2">
 							Location Country
 						</label>
-						<input
-							type="text"
+						<textarea
 							name="location_country"
 							className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 							placeholder="e.g., united states"
 							onChange={handleInputChange}
+							value={filters.location_country}
+							rows={2} // Adjust the number of rows as needed
 						/>
 					</div>
 					{/* Filter Button */}
@@ -284,20 +290,44 @@ function App() {
 						Apply Filters
 					</button>
 				</form>
-				{recommendations && (
-					<div className="mt-8">
-						<h2 className="text-xl font-bold mb-4 text-gray-800">
-							Recommendations of Targeted Audience
-						</h2>
-						<div className="prose max-h-96 overflow-y-auto">
-							<ReactMarkdown>{recommendations}</ReactMarkdown>
-						</div>
-					</div>
-				)}
 			</aside>
-
 			{/* Main Content */}
 			<main className="flex-1 p-8 mt-16 overflow-auto">
+				{recommendations && (
+					<div className="mb-8 bg-white p-6 rounded-lg shadow-md">
+						<div
+							className="flex items-center justify-between cursor-pointer"
+							onClick={() => setShowRecommendations(!showRecommendations)}
+						>
+							<h2 className="text-xl font-bold text-gray-800">
+								Recommendations for Target Audience
+							</h2>
+							<svg
+								className={`w-5 h-5 transform transition-transform ${
+									showRecommendations ? "rotate-180" : ""
+								}`}
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M19 9l-7 7-7-7"
+								/>
+							</svg>
+						</div>
+						{showRecommendations && (
+							<div className="mt-4 prose">
+								<ReactMarkdown remarkPlugins={[remarkGfm]}>
+									{recommendations.replace("```", "")}
+								</ReactMarkdown>
+							</div>
+						)}
+					</div>
+				)}
 				{error && (
 					<div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
 						{error}
