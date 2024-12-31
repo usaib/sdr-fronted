@@ -2,8 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import "./index.css"; // Tailwind CSS
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from 'remark-gfm';
-
+import remarkGfm from "remark-gfm";
 
 function App() {
 	const [data, setData] = useState([]);
