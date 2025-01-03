@@ -6,6 +6,7 @@ import App from './App';
 import Outreach from './Outreach';
 import reportWebVitals from './reportWebVitals';
 import CampaignRecommendation from './CampaignRecommendation';
+import Home from './pages/Home';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,7 +15,12 @@ root.render(
 			<Routes>
 				<Route path="/finding-people" element={<App />} />
 				<Route path="/outreach-strategy" element={<Outreach />} />
-				<Route path="/" element={<CampaignRecommendation />} />
+				<Route
+					path="/campaign-recommendation"
+					element={<CampaignRecommendation />}
+				/>
+				<Route path="/advertise-manager" element={<CampaignRecommendation />} />
+				<Route path="/" element={<Home />} />
 			</Routes>
 		</BrowserRouter>
 	</React.StrictMode>
