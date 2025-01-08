@@ -156,7 +156,7 @@ function AdvertiseInputs() {
 				await new Promise((resolve) => setTimeout(resolve, 1800));
 			}
 			const response = await fetch(
-				"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/advertise",
+				"http://127.0.0.1:5000/api/advertise",
 				{
 					method: "POST",
 					headers: {
@@ -187,7 +187,7 @@ function AdvertiseInputs() {
 						posts: data.posts,
 						image_url: data.image_url,
 						video_url:
-							"https://cdn.genmo.dev/results/landing-motion-quality.mp4"
+							data.video_url
 					}
 				});
 			} else {
