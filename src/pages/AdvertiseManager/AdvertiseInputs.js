@@ -10,7 +10,7 @@ function AdvertiseInputs() {
 		companyName: "",
 		advertisementPurpose: "",
 		industry: "",
-        target_audience:""
+		target_audience: ""
 	});
 	const [knowledgeBaseKey, setKnowledgeBaseKey] = useState("");
 	const [uploading, setUploading] = useState(false);
@@ -186,8 +186,7 @@ function AdvertiseInputs() {
 						combined_markdown: data.combined_markdown,
 						posts: data.posts,
 						image_url: data.image_url,
-						video_url:
-							data.video_url
+						video_url: data.video_url
 					}
 				});
 			} else {
