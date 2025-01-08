@@ -8,6 +8,7 @@ import reportWebVitals from "./reportWebVitals";
 import CampaignRecommendation from "./CampaignRecommendation";
 import Home from "./pages/Home";
 import AdvertiseInputs from "./pages/AdvertiseManager/AdvertiseInputs";
+import SocialMediaPost from "./pages/AdvertiseManager/SocialMediaPost";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import AdvertisementPlan from "./pages/AdvertiseManager/AdvertisementPlan";
@@ -25,6 +26,7 @@ root.render(
 				/>
 				<Route path="/advertise-manager" element={<AdvertiseInputs />} />
                 <Route path="/advertisement-plan" element={<AdvertisementPlan />} />
+				<Route path="/social-media-post" element={<SocialMediaPost />} />
 
 				<Route path="/" element={<Home />} />
 			</Routes>

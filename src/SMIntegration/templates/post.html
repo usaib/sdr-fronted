@@ -1,0 +1,19 @@
+<form method="POST" enctype="multipart/form-data">
+    <label for="platform">Choose Platform:</label>
+    <select name="platform">
+        {% for platform in platforms %}
+            <option value="{{ platform }}">{{ platform }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label for="text">Post Text:</label>
+    <textarea name="text"></textarea><br><br>
+
+    <label for="image_file">Upload Image (Optional):</label>
+    <input type="file" name="image_file"><br><br>
+
+    <label for="video_file">Upload Video (Optional):</label>
+    <input type="file" name="video_file"><br><br>
+
+    <button type="submit">Post</button>
+</form>
