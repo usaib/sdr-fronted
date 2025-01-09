@@ -3,6 +3,7 @@ import "./index.css"; // Tailwind CSS
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import AutocompleteInput from "./components/Autocomplete";
 
 function App() {
 	const [data, setData] = useState([]);
@@ -96,7 +97,7 @@ function App() {
 				const filterPayload = {
 					filters: {
 						job_company_website: filters.job_company_website
-							? [filters.job_company_website]
+							? filters.job_company_website
 							: [],
 						job_title_role: filters.job_title_role || "",
 						job_title_levels: filters.job_title_levels || [],
@@ -111,7 +112,7 @@ function App() {
 				}
 
 				const response = await fetch(
-					"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/people/search",
+					"http://127.0.0.1:5000/api/people/search",
 					{
 						method: "POST",
 						headers: {
@@ -173,16 +174,11 @@ function App() {
 	// Add form submit handler
 	const handleFilterSubmit = (e) => {
 		e.preventDefault();
-
-		// Transform job_title_levels from comma-separated string to array
-		const levels = formValues.job_title_levels
-			? formValues.job_title_levels.split(",").map((level) => level.trim())
-			: [];
+		
 
 		// Update filters with current form values
 		setFilters({
 			...formValues,
-			job_title_levels: levels
 		});
 	};
 
@@ -230,55 +226,52 @@ function App() {
 				<h2 className="text-xl font-bold mb-6 text-gray-800">Filters</h2>
 				<form onSubmit={handleFilterSubmit} className="space-y-6">
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Company Website
-						</label>
-						<textarea
-							type="text"
-							name="job_company_website"
-							className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						<AutocompleteInput
+							field="company"
+							value={formValues.job_company_website}
+							onChange={(value) =>
+								setFormValues((prev) => ({
+									...prev,
+									job_company_website: value
+								}))
+							}
 							placeholder="e.g., plaid.com"
-							onChange={handleInputChange}
-							rows={1}
+							label="Company Website"
+							multiSelect={true} // Enable multi-select
 						/>
 					</div>
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Job Title Role
-						</label>
-						<textarea
-							name="job_title_role"
-							className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						<AutocompleteInput
+							field="title"
+							value={formValues.job_title_role}
+							onChange={(value) =>
+								setFormValues((prev) => ({ ...prev, job_title_role: value }))
+							}
 							placeholder="e.g., engineering"
-							onChange={handleInputChange}
-							value={filters.job_title_role}
-							rows={2} // Adjust the number of rows as needed
+							label="Job Title Role"
 						/>
 					</div>
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Job Title Levels
-						</label>
-						<textarea
-							name="job_title_levels"
-							className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						<AutocompleteInput
+							field="title"
+							value={formValues.job_title_levels}
+							onChange={(value) =>
+								setFormValues((prev) => ({ ...prev, job_title_levels: value }))
+							}
 							placeholder="vp, director, manager"
-							onChange={handleInputChange}
-							value={filters.job_title_levels}
-							rows={2} // Adjust the number of rows as needed
+							label="Job Title Levels"
+							multiSelect={true} // Enable multi-select
 						/>
 					</div>
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Location Country
-						</label>
-						<textarea
-							name="location_country"
-							className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						<AutocompleteInput
+							field="country"
+							value={formValues.location_country}
+							onChange={(value) =>
+								setFormValues((prev) => ({ ...prev, location_country: value }))
+							}
 							placeholder="e.g., united states"
-							onChange={handleInputChange}
-							value={filters.location_country}
-							rows={2} // Adjust the number of rows as needed
+							label="Location Country"
 						/>
 					</div>
 					{/* Filter Button */}
