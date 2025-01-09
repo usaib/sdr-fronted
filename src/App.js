@@ -112,7 +112,7 @@ function App() {
 				}
 
 				const response = await fetch(
-					"http://127.0.0.1:5000/api/people/search",
+					"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/people/search",
 					{
 						method: "POST",
 						headers: {
