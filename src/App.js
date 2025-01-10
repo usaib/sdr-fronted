@@ -68,7 +68,7 @@ function App() {
 	};
 	const [filters, setFilters] = useState(
 		targeting_parameters || {
-			job_company_website: "",
+			job_company_name: "",
 			job_title_role: "",
 			job_title_levels: [],
 			location_country: ""
@@ -76,7 +76,7 @@ function App() {
 	);
 
 	const [formValues, setFormValues] = useState({
-		job_company_website: "",
+		job_company_name: "",
 		job_title_role: "",
 		job_title_levels: "",
 		location_country: ""
@@ -96,8 +96,8 @@ function App() {
 				// Construct the filters object
 				const filterPayload = {
 					filters: {
-						job_company_website: filters.job_company_website
-							? filters.job_company_website
+						job_company_name: filters.job_company_name
+							? filters.job_company_name
 							: [],
 						job_title_role: filters.job_title_role || "",
 						job_title_levels: filters.job_title_levels || [],
@@ -133,7 +133,7 @@ function App() {
 					const transformedData = responseData.data.data.map((person) => ({
 						name: `${person.first_name} ${person.last_name}`,
 						jobTitle: person.job_title,
-						companyWebsite: person.job_company_website,
+						companyWebsite: person.job_company_name,
 						company: person.job_company_name,
 						email: person.work_email,
 						phone: person.mobile_phone,
@@ -174,11 +174,10 @@ function App() {
 	// Add form submit handler
 	const handleFilterSubmit = (e) => {
 		e.preventDefault();
-		
 
 		// Update filters with current form values
 		setFilters({
-			...formValues,
+			...formValues
 		});
 	};
 
@@ -228,13 +227,14 @@ function App() {
 					<div>
 						<AutocompleteInput
 							field="company"
-							value={formValues.job_company_website}
-							onChange={(value) =>
+							value={formValues.job_company_name}
+							onChange={(value) => {
+								alert(value);
 								setFormValues((prev) => ({
 									...prev,
-									job_company_website: value
-								}))
-							}
+									job_company_name: value 
+								}));
+							}}
 							placeholder="e.g., plaid.com"
 							label="Company Website"
 							multiSelect={true} // Enable multi-select
