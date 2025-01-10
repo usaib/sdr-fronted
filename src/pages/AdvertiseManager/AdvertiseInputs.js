@@ -157,7 +157,7 @@ function AdvertiseInputs() {
 				await new Promise((resolve) => setTimeout(resolve, 1800));
 			}
 			const response = await fetch(
-				"http://http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/advertise",
+				"http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/advertise",
 				{
 					method: "POST",
 					headers: {

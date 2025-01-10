@@ -66,21 +66,21 @@ function App() {
 		const selectedData = selectedRows.map((index) => data[index]);
 		navigate("/outreach-strategy", { state: { selectedData } });
 	};
-	const [filters, setFilters] = useState(
+	const [filters, setFilters] = useState({
+		job_company_name: "",
+		job_title_role: "",
+		job_title_levels: [],
+		location_country: ""
+	});
+
+	const [formValues, setFormValues] = useState(
 		targeting_parameters || {
 			job_company_name: "",
 			job_title_role: "",
-			job_title_levels: [],
+			job_title_levels: "",
 			location_country: ""
 		}
 	);
-
-	const [formValues, setFormValues] = useState({
-		job_company_name: "",
-		job_title_role: "",
-		job_title_levels: "",
-		location_country: ""
-	});
 	const [size] = useState(10);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
@@ -231,7 +231,7 @@ function App() {
 							onChange={(value) => {
 								setFormValues((prev) => ({
 									...prev,
-									job_company_name: value 
+									job_company_name: value
 								}));
 							}}
 							placeholder="e.g., plaid.com"
