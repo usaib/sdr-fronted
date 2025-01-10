@@ -6,7 +6,8 @@ import SocialMediaPost from "./SocialMediaPost";
 
 const AdvertisementPlan = () => {
 	const location = useLocation();
-	const { combined_markdown, video_url } = location.state || {};
+	const { combined_markdown, video_url, video_from_text } =
+		location.state || {};
 
 	return (
 		<div className="flex gap-6 p-6 mx-auto max-w-8xl">
@@ -39,6 +40,13 @@ const AdvertisementPlan = () => {
 				</h3>
 				<video controls autoPlay className="w-full rounded-lg shadow-lg">
 					<source src={video_url} type="video/mp4" />
+					Your browser does not support the video tag.
+				</video>
+				<h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
+					Generated Video from Text Prompt
+				</h3>
+				<video controls autoPlay className="w-full rounded-lg shadow-lg">
+					<source src={video_from_text} type="video/mp4" />
 					Your browser does not support the video tag.
 				</video>
 			</div>

@@ -156,13 +156,16 @@ function AdvertiseInputs() {
 				setCurrentLoadingStep(2 + selectedPlatforms.indexOf(platform));
 				await new Promise((resolve) => setTimeout(resolve, 1800));
 			}
-			const response = await fetch("http://127.0.0.1:5000/api/advertise", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify(payload)
-			});
+			const response = await fetch(
+				"http://http://sdrlb-1393110018.us-east-1.elb.amazonaws.com/api/advertise",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(payload)
+				}
+			);
 
 			// Step 7: Video Generation
 			if (selectedContentTypes.includes("video")) {
@@ -184,7 +187,8 @@ function AdvertiseInputs() {
 						combined_markdown: data.combined_markdown,
 						posts: data.posts,
 						image_url: data.image_url,
-						video_url: data.video_url
+						video_url: data.video_url,
+						video_from_text: data.video_from_text
 					}
 				});
 			} else {
