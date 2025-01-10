@@ -229,7 +229,6 @@ function App() {
 							field="company"
 							value={formValues.job_company_name}
 							onChange={(value) => {
-								alert(value);
 								setFormValues((prev) => ({
 									...prev,
 									job_company_name: value 
