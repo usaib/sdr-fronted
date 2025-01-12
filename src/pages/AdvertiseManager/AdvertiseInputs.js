@@ -184,11 +184,8 @@ function AdvertiseInputs() {
 			if (data.success) {
 				navigate("/advertisement-plan", {
 					state: {
-						combined_markdown: data.combined_markdown,
-						posts: data.posts,
-						image_url: data.image_url,
-						video_url: data.video_url,
-						video_from_text: data.video_from_text
+						status: data.status,
+						task_id: data.task_id
 					}
 				});
 			} else {
