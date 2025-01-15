@@ -2,7 +2,38 @@ import React, { useState } from "react";
 import AWS from "aws-sdk";
 import { useNavigate } from "react-router-dom";
 import LoadingSteps from "./LoadingSteps";
-
+const targetAudienceOptions = {
+	Restaurant: [
+		{ value: "Fine_Dining", label: "Fine Dining Enthusiasts" },
+		{ value: "Families", label: "Families with Children" },
+		{ value: "Young_Professionals", label: "Young Professionals" },
+		{ value: "Students", label: "College Students" },
+		{ value: "Business_Customers", label: "Business Lunch Customers" },
+		{ value: "Health_Conscious", label: "Health-Conscious Diners" },
+		{ value: "Tourists", label: "Tourists/Travelers" },
+		{ value: "Late_Night", label: "Late Night Diners" },
+		{ value: "Delivery_Focused", label: "Delivery/Takeout Customers" },
+		{ value: "Vegetarian_Vegan", label: "Vegetarian/Vegan Customers" },
+		{ value: "Senior_Citizens", label: "Senior Citizens" },
+		{ value: "Local_Regulars", label: "Local Regular Customers" },
+		{ value: "Special_Occasions", label: "Special Occasion Diners" },
+		{ value: "Catering_Clients", label: "Catering/Event Clients" }
+	],
+	Startup: [
+		{ value: "SMB", label: "Small and Medium Businesses (SMB)" },
+		{ value: "Enterprise", label: "Enterprise Companies" },
+		{ value: "Tech_Startups", label: "Tech Startups" },
+		{ value: "Investors", label: "Investors and VCs" },
+		{ value: "Entrepreneurs", label: "Entrepreneurs" },
+		{ value: "Developer_Community", label: "Developer Community" },
+		{ value: "Business_Decision_Makers", label: "Business Decision Makers" },
+		{ value: "Innovation_Teams", label: "Innovation Teams" },
+		{ value: "Accelerators", label: "Accelerators and Incubators" },
+		{ value: "Industry_Experts", label: "Industry Experts" },
+		{ value: "Early_Adopters", label: "Early Adopters" },
+		{ value: "Corporate_Partners", label: "Corporate Partners" }
+	]
+};
 function AdvertiseInputs() {
 	const [formData, setFormData] = useState({
 		website: "",
@@ -24,6 +55,7 @@ function AdvertiseInputs() {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentLoadingStep, setCurrentLoadingStep] = useState(0);
+  const [selectedTargetAudiences, setSelectedTargetAudiences] = useState([]);
 
 	const handleContentTypeChange = (e) => {
 		const { value, checked } = e.target;
@@ -38,11 +70,25 @@ function AdvertiseInputs() {
 			checked ? [...prev, value] : prev.filter((platform) => platform !== value)
 		);
 	};
-
-	const handleChange = (e) => {
+ const handleChange = (e) => {
 		const { name, value } = e.target;
+		if (name === "industry") {
+			setSelectedTargetAudiences([]); // Reset selected audiences when industry changes
+		}
 		setFormData((prev) => ({ ...prev, [name]: value }));
-	};
+ };
+
+ const handleTargetAudienceChange = (e) => {
+		const value = e.target.value;
+		setSelectedTargetAudiences((prev) => {
+			if (prev.includes(value)) {
+				return prev.filter((item) => item !== value);
+			} else {
+				return [...prev, value];
+			}
+		});
+ };
+	
 
 	const handleFileChange = async (e) => {
 		const file = e.target.files[0];
@@ -134,7 +180,7 @@ function AdvertiseInputs() {
 			company_name: formData.companyName,
 			advertisement_purpose: formData.advertisementPurpose,
 			industry: formData.industry,
-			target_audience: formData.target_audience,
+			target_audience: selectedTargetAudiences.join(", "), // Convert array to comma-separated string
 			content_types: selectedContentTypes,
 			platforms: selectedPlatforms,
 			video_image_key: videoFile,
@@ -293,21 +339,32 @@ function AdvertiseInputs() {
 							<label className="block text-sm font-medium text-gray-700 mb-2">
 								Target Audience
 							</label>
-							<select
-								name="target_audience"
-								value={formData.target_audience}
-								onChange={handleChange}
-								className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-							>
-								<option value="">Select Target Audience</option>
-								<option value="SMB">Small and Medium Businesses (SMB)</option>
-								<option value="Startups">Startups</option>
-								<option value="E-commerce">E-commerce</option>
-								<option value="Enterprise">Enterprise</option>
-								<option value="Freelancers">Freelancers</option>
-								<option value="General Consumers">General Consumers</option>
-								{/* Add more options as needed */}
-							</select>
+							<div className="max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-3">
+								{formData.industry &&
+									targetAudienceOptions[formData.industry]?.map((option) => (
+										<div key={option.value} className="flex items-center mb-2">
+											<input
+												type="checkbox"
+												id={option.value}
+												value={option.value}
+												checked={selectedTargetAudiences.includes(option.value)}
+												onChange={handleTargetAudienceChange}
+												className="mr-2"
+											/>
+											<label
+												htmlFor={option.value}
+												className="text-sm text-gray-700"
+											>
+												{option.label}
+											</label>
+										</div>
+									))}
+								{!formData.industry && (
+									<p className="text-gray-500 text-sm">
+										Please select an industry first
+									</p>
+								)}
+							</div>
 						</div>
 
 						<button
