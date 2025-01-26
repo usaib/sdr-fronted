@@ -16,7 +16,8 @@ function Outreach() {
 		company_name: ""
 	});
 	const [formErrors, setFormErrors] = useState({
-		purpose: false,
+		campaignObjective: false,
+		productDetails: false,
 		name: false,
 		company_name: false
 	});
@@ -24,10 +25,15 @@ function Outreach() {
 	const [emailPreferences, setEmailPreferences] = useState({
 		tone: "professional",
 		language: "american_english",
-		purpose: "Sales Outreach for AI Company" // You can make this dynamic if needed
+		campaignObjective: "", // Updated from purpose
+		productDetails: "" // New field for product details
 	});
+
 	const isFormComplete =
-		emailPreferences.purpose && senderData.name && senderData.company_name;
+		emailPreferences.campaignObjective &&
+		emailPreferences.productDetails &&
+		senderData.name &&
+		senderData.company_name;
 
 	// Updated input change handlers with validation
 	const handleSenderInputChange = (e) => {
@@ -58,7 +64,8 @@ function Outreach() {
 
 	const generateAllEmails = async () => {
 		const newErrors = {
-			purpose: !emailPreferences.purpose,
+			campaignObjective: !emailPreferences.campaignObjective,
+			productDetails: !emailPreferences.productDetails,
 			name: !senderData.name,
 			company_name: !senderData.company_name
 		};
@@ -84,7 +91,8 @@ function Outreach() {
 					body: JSON.stringify({
 						person_data: selectedData,
 						sender_data: senderData,
-						purpose: emailPreferences.purpose,
+						campaign_objective: emailPreferences.campaignObjective,
+						product_details: emailPreferences.productDetails,
 						tone: emailPreferences.tone,
 						language: emailPreferences.language
 					})
@@ -195,25 +203,49 @@ function Outreach() {
 					<div className="grid grid-cols-1 gap-6 p-4">
 						<div>
 							<label className="block text-xl font-semibold text-gray-900 mb-2">
-								Purpose of Campaign <span className="text-red-500">*</span>
+								Campaign Objective <span className="text-red-500">*</span>
 							</label>
 							<input
 								type="text"
-								name="purpose"
-								value={emailPreferences.purpose}
+								name="campaignObjective"
+								value={emailPreferences.campaignObjective}
 								onChange={handlePreferenceChange}
 								className={`w-full p-3 border ${
-									formErrors.purpose ? "border-red-500" : "border-gray-300"
+									formErrors.campaignObjective
+										? "border-red-500"
+										: "border-gray-300"
 								} rounded-lg focus:ring-2 focus:ring-blue-500 text-lg`}
-								placeholder="e.g., Sales Outreach for AI Company"
+								placeholder="e.g., Introduce our AI solution to potential clients"
 							/>
+
 							{formErrors.purpose && (
 								<p className="mt-1 text-sm text-red-500">
 									Please enter the purpose of the campaign
 								</p>
 							)}
 						</div>
-
+						<div>
+							<label className="block text-xl font-semibold text-gray-900 mb-2">
+								Product Details <span className="text-red-500">*</span>
+							</label>
+							<textarea
+								name="productDetails"
+								value={emailPreferences.productDetails}
+								onChange={handlePreferenceChange}
+								className={`w-full p-3 border ${
+									formErrors.productDetails
+										? "border-red-500"
+										: "border-gray-300"
+								} rounded-lg focus:ring-2 focus:ring-blue-500 text-lg`}
+								rows={4}
+								placeholder="Describe your product, its key features, unique value proposition, and target audience. The more detailed you are, the more personalized the emails will be."
+							/>
+							{formErrors.productDetails && (
+								<p className="mt-1 text-sm text-red-500">
+									Please provide details about your product
+								</p>
+							)}
+						</div>
 						<div className="grid grid-cols-5 gap-4">
 							<div>
 								<label className="block text-sm font-medium text-gray-700 mb-1">
