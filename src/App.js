@@ -70,7 +70,7 @@ function App() {
 		job_company_name: "",
 		job_title_role: "",
 		job_title_levels: [],
-		location_country: ""
+		location_names: ""
 	});
 
 	const [formValues, setFormValues] = useState(
@@ -78,7 +78,7 @@ function App() {
 			job_company_name: "",
 			job_title_role: "",
 			job_title_levels: "",
-			location_country: ""
+			location_names: ""
 		}
 	);
 	const [size] = useState(10);
@@ -101,7 +101,7 @@ function App() {
 							: [],
 						job_title_role: filters.job_title_role || "",
 						job_title_levels: filters.job_title_levels || [],
-						location_country: filters.location_country || ""
+						location_names: filters.location_names || ""
 					},
 					size: size
 				};
@@ -138,7 +138,7 @@ function App() {
 						email: person.work_email,
 						phone: person.mobile_phone,
 						jobTitleLevels: person.job_title_levels,
-						locationCountry: person.location_country,
+						locationNames: person.location_names,
 						linkedinUrl: person.linkedin_url,
 						skills: person.skills.slice(0, 3) // Take first 3 skills
 					}));
@@ -264,13 +264,13 @@ function App() {
 					</div>
 					<div>
 						<AutocompleteInput
-							field="country"
-							value={formValues.location_country}
+							field="location"
+							value={formValues.location_names}
 							onChange={(value) =>
-								setFormValues((prev) => ({ ...prev, location_country: value }))
+								setFormValues((prev) => ({ ...prev, location_names: value }))
 							}
-							placeholder="e.g., united states"
-							label="Location Country"
+							placeholder="e.g. united states/california/berkeley"
+							label="Locations Country/States/Locality"
 						/>
 					</div>
 					{/* Filter Button */}
@@ -415,7 +415,7 @@ function App() {
 										scope="col"
 										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
-										Location
+										Locations
 									</th>
 								</tr>
 							</thead>
@@ -508,7 +508,7 @@ function App() {
 												</a>
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-												{item.locationCountry}
+												{item.locationNames}
 											</td>
 										</tr>
 									))
