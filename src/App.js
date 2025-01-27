@@ -99,7 +99,7 @@ function App() {
 						job_company_name: filters.job_company_name
 							? filters.job_company_name
 							: [],
-						job_title_role: filters.job_title_role || "",
+						job_title: filters.job_title_role || "",
 						job_title_levels: filters.job_title_levels || [],
 						location_names: filters.location_names || ""
 					},
